@@ -39,7 +39,7 @@
 
 	function tryLogin($email, $password): User | null {
 		global $dbconn;
-		$result = pg_query($dbconn, "SELECT * FROM users WHERE email = '$email'");
+		$result = pg_query_params($dbconn, "SELECT * FROM users WHERE lower(email) = lower($1)", array($email));
 
 		if ($result) {
 			$row = pg_fetch_assoc($result);
@@ -51,6 +51,9 @@
 	}
 
 	function createUser($email, $username, $password): User | string {
+		$email = trim($email);
+		$username = trim($username);
+
 		global $dbconn;
 		if (strlen($username) < 3) {
 			return "Username must be at least 3 characters long";
@@ -60,7 +63,7 @@
 			return "Password must be at least 8 characters long";
 		}
 
-		$result = pg_query($dbconn, "SELECT * FROM users WHERE email = '$email'");
+		$result = pg_query_params($dbconn, "SELECT * FROM users WHERE lower(email) = lower($1)", array($email));
 		if ($result) {
 			$row = pg_fetch_assoc($result);
 			if ($row) {
@@ -68,7 +71,7 @@
 			}
 		}
 
-		$result = pg_query($dbconn, "SELECT * FROM users WHERE username = '$username'");
+		$result = pg_query_params($dbconn, "SELECT * FROM users WHERE lower(username) = lower($1)", array($username));
 		if ($result) {
 			$row = pg_fetch_assoc($result);
 			if ($row) {
