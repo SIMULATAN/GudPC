@@ -10,6 +10,7 @@
 		public string $email;
 		public DateTime $created_at;
 		public DateTime $updated_at;
+		public string $profile_picture;
 	}
 
 	function getUser($id): User | null {
@@ -32,6 +33,7 @@
 		$user->email = $row["email"];
 		$user->created_at = new DateTime($row["created_at"]);
 		$user->updated_at = new DateTime($row["updated_at"]);
+		$user->profile_picture = $row["profile_picture"] ?? "https://gravatar.com/avatar/" . md5(strtolower(trim($user->email))) . "?s=200&d=mp";
 		return $user;
 	}
 

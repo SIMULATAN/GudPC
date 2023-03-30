@@ -1,13 +1,9 @@
 <?php
-	if (session_status() == PHP_SESSION_NONE) {
-		session_start();
-	}
+	include_once "../scaffolding/heading.php";
 
 	if (isset($_SESSION["user"])) {
 		echo '<script>window.location.href = "/GudPC/";</script>';
 	}
-
-	include_once "../scaffolding/heading.php";
 
 	if (isset($_POST["username"]) && isset($_POST["password"]) && isset($_POST["email"])) {
 		$username = $_POST["username"];
