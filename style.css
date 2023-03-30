@@ -60,6 +60,7 @@ a {
 
 .header {
     min-height: 100vh;
+    text-shadow: .1em .1em 1em #000;
 }
 
 .header_inner {
@@ -72,8 +73,9 @@ a {
     margin: 0;
 }
 
-.header_inner p {
+.panel_inner p {
     margin-top: 0;
+    margin-bottom: 5%;
 }
 
 .panel_inner {
@@ -162,6 +164,7 @@ a {
     flex-direction: column;
 }
 
-.headline {
-    text-shadow: .1em .1em 1em #000;
+h1, h2, h3, h4, h5, h6, p {
+    margin: 0;
+    padding: 0;
 }
