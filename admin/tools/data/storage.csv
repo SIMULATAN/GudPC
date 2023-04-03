@@ -1,4 +1,4 @@
-﻿driveName,type,diskCapacity,diskMark,rank,price,driveValue,priceperGB,testDate,samples
+driveName,type,diskCapacity,diskMark,rank,price,driveValue,priceperGB,testDate,samples
 NVMe WDS500G1X0E-00AFY0,SSD,465.8,52280,1,,,,2022,5
 Seagate FireCuda 530 ZP4000GM30023,SSD,3600,52066,2,,,,2021,13
 KINGSTON SKC3000S1024G,SSD,953.9,49829,3,,,,2021,42
