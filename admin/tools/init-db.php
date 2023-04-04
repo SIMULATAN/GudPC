@@ -8,9 +8,16 @@
 		email VARCHAR(255) NOT NULL UNIQUE,
 		created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 		updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-    );");
+	);");
 
-	pg_exec($dbconn, "CREATE TYPE storage_type AS ENUM ('SSD', 'HDD');");
+	// CREATE IF NOT EXISTS is not supported in PostgreSQL (lmao)
+	pg_exec($dbconn, "
+		DO $$ BEGIN
+			CREATE TYPE storage_type AS ENUM ('SSD', 'HDD');
+		EXCEPTION
+			WHEN duplicate_object THEN null;
+		END $$;
+	");
 
 	pg_exec($dbconn, "CREATE TABLE IF NOT EXISTS storage (
 		id SERIAL PRIMARY KEY,
@@ -38,7 +45,13 @@
 		frequency NUMERIC(6,2) NOT NULL CHECK (frequency > 0)
 	);");
 
-	// TODO: mobo
+	pg_exec($dbconn, "CREATE TABLE IF NOT EXISTS motherboard (
+		id SERIAL PRIMARY KEY,
+		name VARCHAR(255) NOT NULL UNIQUE,
+		price NUMERIC(12,2) NOT NULL CHECK (price > 0),
+		memory_slots NUMERIC(4) NOT NULL CHECK (memory_slots > 0),
+		memory_max NUMERIC(10) NOT NULL CHECK (memory_max > 0)
+	)");
 
-	echo "Database initialized.";
+	echo "Database initialized.\n";
 ?>
