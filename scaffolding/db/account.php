@@ -50,7 +50,7 @@
 		return null;
 	}
 
-	function createUser($email, $username, $password): User | string {
+	function createNewUser($email, $username, $password): User | string {
 		$email = trim($email);
 		$username = trim($username);
 

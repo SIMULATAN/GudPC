@@ -12,7 +12,7 @@
 
 		require_once "../scaffolding/db/account.php";
 
-		$result = createUser($email, $username, $password);
+		$result = createNewUser($email, $username, $password);
 		if (!is_string($result)) {
 			$_SESSION["user"] = $result;
 			echo '<script>window.location.href = "/GudPC/";</script>';
