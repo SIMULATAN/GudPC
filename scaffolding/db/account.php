@@ -3,17 +3,34 @@
 
 	date_default_timezone_set("Europe/Vienna");
 
-	class User {
+	class User
+	{
 		public int $id;
 		public string $username;
+		/// password in hashed form
 		public string $password;
 		public string $email;
 		public DateTime $created_at;
 		public DateTime $updated_at;
-		public string $profile_picture;
+		public string|null $profile_picture;
 	}
 
-	function getUser($id): User | null {
+	function updateUser(User $user): bool
+	{
+		global $dbconn;
+		$user->updated_at = new DateTime();
+
+		return pg_update($dbconn, "users", array(
+			"username" => $user->username,
+			"password" => $user->password,
+			"email" => $user->email,
+			"updated_at" => $user->updated_at->format("Y-m-d H:i:s"),
+			"profile_picture" => $user->profile_picture
+		), array("id" => $user->id));
+	}
+
+	function getUser($id): User|null
+	{
 		global $dbconn;
 		$result = pg_query($dbconn, "SELECT * FROM users WHERE id = $id");
 
@@ -25,7 +42,8 @@
 		return deserializeUser($row);
 	}
 
-	function deserializeUser($row): User {
+	function deserializeUser($row): User
+	{
 		$user = new User();
 		$user->id = $row["id"];
 		$user->username = $row["username"];
@@ -33,11 +51,12 @@
 		$user->email = $row["email"];
 		$user->created_at = new DateTime($row["created_at"]);
 		$user->updated_at = new DateTime($row["updated_at"]);
-		$user->profile_picture = $row["profile_picture"] ?? "https://gravatar.com/avatar/" . md5(strtolower(trim($user->email))) . "?s=200&d=mp";
+		$user->profile_picture = $row["profile_picture"] ?? null;
 		return $user;
 	}
 
-	function tryLogin($email, $password): User | null {
+	function tryLogin($email, $password): User|null
+	{
 		global $dbconn;
 		$result = pg_query_params($dbconn, "SELECT * FROM users WHERE lower(email) = lower($1)", array($email));
 
@@ -50,7 +69,8 @@
 		return null;
 	}
 
-	function createNewUser($email, $username, $password): User | string {
+	function createNewUser($email, $username, $password): User|string
+	{
 		$email = trim($email);
 		$username = trim($username);
 

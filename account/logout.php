@@ -1,10 +1,9 @@
 <?php
-	if (session_status() == PHP_SESSION_NONE) {
-		session_start();
-	}
+	SESSION_START();
 
-	if (isset($_SESSION["user"])) {
-		unset($_SESSION["user"]);
-	}
+	// Destroy the session
+	session_unset();
+	session_destroy();
+	session_write_close();
 
-	header("Location: " . ($_SERVER["HTTP_REFERRER"] ?? "/GudPC"));
+	header("Location: ../");

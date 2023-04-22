@@ -1,8 +1,10 @@
 <?php
 	include_once "../scaffolding/heading.php";
+	include_once $_SERVER["DOCUMENT_ROOT"] . "/GudPC/config/config.php";
+	global $config;
 
 	if (isset($_SESSION["user"])) {
-		echo '<script>window.location.href = "/GudPC/";</script>';
+		echo "<script>window.location.href = '{$config->root_path}';</script>";
 	}
 
 	if (isset($_POST["username"]) && isset($_POST["password"]) && isset($_POST["email"])) {
@@ -15,13 +17,13 @@
 		$result = createNewUser($email, $username, $password);
 		if (!is_string($result)) {
 			$_SESSION["user"] = $result;
-			echo '<script>window.location.href = "/GudPC/";</script>';
+			echo "<script>window.location.href = '{$config->root_path}';</script>";
 		}
 	}
 ?>
 <link rel="stylesheet" href="../css/login.css">
 <div class="panel header" data-aos="fade-up">
-<div class="panel_inner login">
+	<div class="panel_inner no-hover box-padding">
 		<h1 class="headline">Register</h1>
 		<form action="?action=register" method="post" class="login-form">
 			<label for="username">Username</label>
@@ -29,7 +31,8 @@
 			<label for="email">Email</label>
 			<input type="email" name="email" placeholder="Email" required value="<?php echo $email ?? '' ?>">
 			<label for="password">Password</label>
-			<input type="password" name="password" placeholder="Password" required value="<?php echo $password ?? '' ?>">
+			<input type="password" name="password" placeholder="Password" required
+				   value="<?php echo $password ?? '' ?>">
 			<input type="submit" value="Register">
 		</form>
 		<div class="login-bottom-text">

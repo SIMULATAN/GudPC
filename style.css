@@ -91,7 +91,7 @@ a {
     text-align: center;
 }
 
-.panel_inner:hover {
+.panel_inner:hover:not(.no-hover) {
     transform: scale(1.05)
 }
 
@@ -128,7 +128,7 @@ a {
     flex-wrap: wrap;
 }
 
-.panel_inner img {
+.headline img, #about_panels img {
     height: 10vw;
     display: block;
     margin-top: 5%;
@@ -289,4 +289,13 @@ h1, h2, h3, h4, h5, h6, p {
 
 .flex {
     display: flex;
+}
+
+.box-padding {
+    padding: 1.5% 2%;
+}
+
+.box-padding h1 {
+    width: 100%;
+    text-align: center;
 }
