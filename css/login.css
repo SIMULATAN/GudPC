@@ -5,7 +5,7 @@
     justify-content: space-between;
 }
 
-.login-form input {
+.login-form input, #profile-picture-type {
     box-sizing: border-box;
 
     background: rgba(52, 52, 52, 0.6);
@@ -21,6 +21,11 @@
     margin-top: 1%;
 
     width: 100%;
+}
+
+#profile-picture-type {
+    height: 1.5rem;
+    margin-bottom: 3%;
 }
 
 .login-form input[type=submit] {

@@ -1,4 +1,6 @@
 <?php
+	require_once "../scaffolding/db/account.php";
+
 	SESSION_START();
 
 	// Destroy the session

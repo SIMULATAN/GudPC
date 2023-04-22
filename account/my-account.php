@@ -67,6 +67,14 @@
 			width: 15em;
 		}
 
+		.profile-pic .-label > * {
+			display: none;
+		}
+
+		.profile-pic .-label:hover > * {
+			display: flex;
+		}
+
 		.profile-pic:hover .-label {
 			display: flex;
 			justify-content: center;
@@ -86,6 +94,14 @@
 
 	<script>
         let changeProfilePicture = function (event) {
+            if (event.target.files.length === 0) {
+				return;
+			}
+            if (event.target.files[0].size > 8 * 1024 * 1024) {
+				alert("File too large! Max size is 8 MB.");
+				return;
+			}
+
             // send multiform data to server
             let formData = new FormData();
             formData.append("profile_picture", event.target.files[0]);
@@ -97,10 +113,39 @@
                 .then(data => {
                     return data.text().then(text => {
                         if (data.status === 200) {
+                            document.getElementById("profile-picture-type").value = "upload";
                             let images = document.getElementsByClassName("profile-picture");
                             // set from body, the URL will be the same (md5 of the user id) but the image might be different
                             for (let i = 0; i < images.length; i++) {
                                 images[i].src = text + "?" + new Date().getTime();
+                            }
+                        } else {
+                            throw new Error(`${data.status} ${data.statusText}: ${text}`);
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert("Error setting profile picture: " + error);
+                });
+        };
+
+        let changeProfilePictureType = function (event) {
+            if (event.target.value === "upload") {
+                document.getElementById("profile-picture-upload").click();
+            }
+
+            fetch("../api/change-profile-picture-type.php?type=" + event.target.value, {
+                    method: "POST"
+                }
+            )
+                .then(data => {
+                    return data.text().then(text => {
+                        if (data.status === 200) {
+                            let images = document.getElementsByClassName("profile-picture");
+                            document.getElementById("profile-picture-display").style.filter = event.target.value === "empty" ? "invert(1)" : "none";
+                            for (let i = 0; i < images.length; i++) {
+                                images[i].src = text;
                             }
                         } else {
                             throw new Error(`${data.status} ${data.statusText}: ${text}`);
@@ -130,21 +175,38 @@
 				</form>
 				<div class="profile-picture-container">
 					<label>Profile Picture</label>
+					<select id="profile-picture-type" onchange="changeProfilePictureType(event)">
+						<option value="gravatar" <?php echo $user->profile_picture?->type == ProfilePictureType::GRAVATAR ? "selected" : "" ?>>
+							Gravatar
+						</option>
+						<option value="letter" <?php echo $user->profile_picture?->type == ProfilePictureType::LETTER ? "selected" : "" ?>>
+							Letter
+						</option>
+						<option value="upload" <?php echo $user->profile_picture?->type == ProfilePictureType::UPLOAD ? "selected" : "" ?>>
+							Upload
+						</option>
+						<option value="empty" <?php echo $user->profile_picture?->type == ProfilePictureType::EMPTY ? "selected" : "" ?>>
+							Empty
+						</option>
+					</select>
 					<div class="profile-pic">
-						<label class="-label" for="file">
+						<label class="-label" for="profile-picture-upload">
 							<span class="glyphicon glyphicon-camera"></span>
 							<span>Change Image</span>
 						</label>
-						<input id="file" type="file" onchange="changeProfilePicture(event)"/>
+						<input id="profile-picture-upload" type="file" onchange="changeProfilePicture(event)"/>
 						<img alt="Profile Picture of <?php echo $user->username ?>"
-							 src="<?php echo $user->profile_picture ?? "https://gravatar.com/avatar/" . md5(strtolower(trim($user->email))) . "?s=200&d=mp" ?>"
-							 class="profile-picture" width="200"/>
+							 src="<?php echo $user->profile_picture->getUrl() ?>"
+							 class="profile-picture" id="profile-picture-display" width="200"/>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 
+	<script>
+        document.getElementById("profile-picture-display").style.filter = document.getElementById("profile-picture-type").value === "empty" ? "invert(1)" : "none";
+	</script>
 
 <?php
 	include_once "../scaffolding/footer.php";

@@ -89,7 +89,11 @@
 	// Save the resized and cropped image as a JPEG to the specified directory
 	imagejpeg($new_image, $image_path);
 
-	$user->profile_picture = $config->root_url . $config->root_path . "uploads/profile/" . $file_id . ".jpg";
+	if ($user->profile_picture == null) {
+		$user->profile_picture = new UserProfilePicture($user, ProfilePictureType::UPLOAD);
+	} else {
+		$user->profile_picture->type = ProfilePictureType::UPLOAD;
+	}
 	updateUser($user);
 
 	echo $config->root_path . "uploads/profile/" . $file_id . ".jpg";

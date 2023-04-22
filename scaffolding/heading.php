@@ -34,7 +34,7 @@
 			<div class="account_link" onclick="toggleDropdown()">
 				<div id="dropdown">
 					<img class="account_button navbar_button profile-picture"
-						src="<?php echo $user ? ($user->profile_picture ?? 'https://gravatar.com/avatar/' . md5(strtolower(trim($user->email))) . '?s=200&d=mp') : '/GudPC/res/unknown-person.svg' ?>"
+						src="<?php echo $user ? $user->profile_picture?->getUrl() : '/GudPC/res/unknown-person.svg' ?>"
 						style="width: 3em; height: 3em; border-radius: 69%">
 					<div class="dropdown_content">
 						<?php

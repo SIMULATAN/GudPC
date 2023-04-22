@@ -3,6 +3,47 @@
 
 	date_default_timezone_set("Europe/Vienna");
 
+	include_once $_SERVER["DOCUMENT_ROOT"] . "/GudPC/config/config.php";
+	global $config;
+
+	enum ProfilePictureType {
+		case EMPTY;
+		case LETTER;
+		case UPLOAD;
+		case GRAVATAR;
+
+		public static function fromString(string $str): ProfilePictureType|null {
+			return match (strtolower($str)) {
+				"empty" => ProfilePictureType::EMPTY,
+				"letter" => ProfilePictureType::LETTER,
+				"upload" => ProfilePictureType::UPLOAD,
+				"gravatar" => ProfilePictureType::GRAVATAR,
+				default => null
+			};
+		}
+	}
+
+	class UserProfilePicture {
+		private User $user;
+		public ProfilePictureType|null $type;
+
+		public function __construct(User $user, ProfilePictureType|null $type) {
+			$this->user = $user;
+			$this->type = $type;
+		}
+
+		public function getUrl(): string {
+			global $config;
+			return match ($this->type) {
+				ProfilePictureType::EMPTY => $config->root . "/res/generic-person.svg",
+				ProfilePictureType::LETTER => $config->root . "/api/profile-picture-letter.php?username=" . $this->user->username,
+				ProfilePictureType::UPLOAD => $config->root . "/uploads/profile/" . md5($this->user->id) . ".jpg",
+				ProfilePictureType::GRAVATAR => "https://www.gravatar.com/avatar/" . md5($this->user->email) . "?d=mp&s=200",
+				default => $config->root . "/res/unknown-person.svg",
+			};
+		}
+	}
+
 	class User
 	{
 		public int $id;
@@ -12,7 +53,11 @@
 		public string $email;
 		public DateTime $created_at;
 		public DateTime $updated_at;
-		public string|null $profile_picture;
+		public UserProfilePicture|null $profile_picture;
+
+		public function save(): bool {
+			return updateUser($this);
+		}
 	}
 
 	function updateUser(User $user): bool
@@ -25,7 +70,7 @@
 			"password" => $user->password,
 			"email" => $user->email,
 			"updated_at" => $user->updated_at->format("Y-m-d H:i:s"),
-			"profile_picture" => $user->profile_picture
+			"profile_picture" => $user->profile_picture->type->name,
 		), array("id" => $user->id));
 	}
 
@@ -51,7 +96,7 @@
 		$user->email = $row["email"];
 		$user->created_at = new DateTime($row["created_at"]);
 		$user->updated_at = new DateTime($row["updated_at"]);
-		$user->profile_picture = $row["profile_picture"] ?? null;
+		$user->profile_picture = new UserProfilePicture($user, ProfilePictureType::fromString($row["profile_picture"] ?? "unknown"));
 		return $user;
 	}
 
