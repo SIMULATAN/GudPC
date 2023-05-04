@@ -11,7 +11,6 @@
 		$email = $_POST["email"];
 		$username = $_POST["username"];
 		$password = $_POST["password"];
-		$profile_picture = $_POST["profile_picture"];
 
 		// update existing user
 		if ($user->email != null && $user->email != $email) {
@@ -22,9 +21,6 @@
 		}
 		if ($password != null) {
 			$user->password = password_hash($password, PASSWORD_DEFAULT);
-		}
-		if ($profile_picture != null && $profile_picture != $user->profile_picture) {
-			$user->profile_picture = $profile_picture;
 		}
 
 		updateUser($user);

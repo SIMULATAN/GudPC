@@ -33,8 +33,11 @@
 			</div>
 			<div class="account_link" onclick="toggleDropdown()">
 				<div id="dropdown">
+                    <?php
+                        var_dump($user->profile_picture->getUrl());
+                    ?>
 					<img class="account_button navbar_button profile-picture"
-						src="<?php echo $user ? $user->profile_picture?->getUrl() : '/GudPC/res/unknown-person.svg' ?>"
+						src="<?php echo ($user ? $user->profile_picture?->getUrl() : '/GudPC/res/unknown-person.svg') ?>"
 						style="width: 3em; height: 3em; border-radius: 69%">
 					<div class="dropdown_content">
 						<?php

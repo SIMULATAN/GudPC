@@ -12,7 +12,20 @@
 		case UPLOAD;
 		case GRAVATAR;
 
+		public function getUrl(string $root, User $user, UserProfileData|null $userProfileData): string {
+			return match ($this) {
+				ProfilePictureType::EMPTY => $root . "/res/generic-person.svg",
+				ProfilePictureType::LETTER => $root . "/api/profile-picture-letter.php?username=" . $user->username,
+				ProfilePictureType::UPLOAD => $root . "/uploads/profile/" . $userProfileData->serialize() . ".jpg",
+				ProfilePictureType::GRAVATAR => "https://www.gravatar.com/avatar/" . md5($user->email) . "?d=mp&s=200",
+				default => $root . "/res/unknown-person.svg",
+			};
+		}
+
 		public static function fromString(string $str): ProfilePictureType|null {
+			if (str_starts_with($str, "upload|")) {
+				return ProfilePictureType::UPLOAD;
+			}
 			return match (strtolower($str)) {
 				"empty" => ProfilePictureType::EMPTY,
 				"letter" => ProfilePictureType::LETTER,
@@ -23,24 +36,48 @@
 		}
 	}
 
+	interface UserProfileData {
+		public function serialize(): string;
+
+		public static function deserialize(string $str): UserProfileData|null;
+	}
+
+	class UserProfilePictureData implements UserProfileData {
+		public string $url;
+
+		public function __construct(string $url) {
+			$this->url = $url;
+		}
+
+		public function serialize(): string {
+			return "upload|" . $this->url;
+		}
+
+		public static function deserialize(string $str): UserProfileData|null {
+			if (!str_starts_with($str, "upload|")) {
+				return null;
+			}
+			return new UserProfilePictureData(substr($str, 7));
+		}
+	}
+
 	class UserProfilePicture {
 		private User $user;
 		public ProfilePictureType|null $type;
+		public UserProfileData|null $data;
 
-		public function __construct(User $user, ProfilePictureType|null $type) {
+		public function __construct(User $user, string $type) {
 			$this->user = $user;
-			$this->type = $type;
+			$this->type = ProfilePictureType::fromString($type);
+			$this->data = match ($this->type) {
+				ProfilePictureType::UPLOAD => UserProfilePictureData::deserialize($type),
+				default => null,
+			};
 		}
 
 		public function getUrl(): string {
 			global $config;
-			return match ($this->type) {
-				ProfilePictureType::EMPTY => $config->root . "/res/generic-person.svg",
-				ProfilePictureType::LETTER => $config->root . "/api/profile-picture-letter.php?username=" . $this->user->username,
-				ProfilePictureType::UPLOAD => $config->root . "/uploads/profile/" . md5($this->user->id) . ".jpg",
-				ProfilePictureType::GRAVATAR => "https://www.gravatar.com/avatar/" . md5($this->user->email) . "?d=mp&s=200",
-				default => $config->root . "/res/unknown-person.svg",
-			};
+			return $this->type->getUrl($config->root, $this->user, $this->data);
 		}
 	}
 
@@ -70,7 +107,8 @@
 			"password" => $user->password,
 			"email" => $user->email,
 			"updated_at" => $user->updated_at->format("Y-m-d H:i:s"),
-			"profile_picture" => $user->profile_picture->type->name,
+			"profile_picture" => $user->profile_picture->type->name .
+				($user->profile_picture->data ? "|" . $user->profile_picture->data->serialize() : ""),
 		), array("id" => $user->id));
 	}
 
@@ -96,7 +134,7 @@
 		$user->email = $row["email"];
 		$user->created_at = new DateTime($row["created_at"]);
 		$user->updated_at = new DateTime($row["updated_at"]);
-		$user->profile_picture = new UserProfilePicture($user, ProfilePictureType::fromString($row["profile_picture"] ?? "unknown"));
+		$user->profile_picture = new UserProfilePicture($user, $row["profile_picture"] ?? "unknown");
 		return $user;
 	}
 
