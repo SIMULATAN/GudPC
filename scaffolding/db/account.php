@@ -6,76 +6,88 @@
 	include_once $_SERVER["DOCUMENT_ROOT"] . "/GudPC/config/config.php";
 	global $config;
 
-	enum ProfilePictureType {
+	enum ProfilePictureType
+	{
 		case EMPTY;
 		case LETTER;
 		case UPLOAD;
 		case GRAVATAR;
 
-		public function getUrl(string $root, User $user, UserProfileData|null $userProfileData): string {
+		public function getUrl(string $root, User $user, UserProfileData|null $userProfileData): string
+		{
 			return match ($this) {
-				ProfilePictureType::EMPTY => $root . "/res/generic-person.svg",
 				ProfilePictureType::LETTER => $root . "/api/profile-picture-letter.php?username=" . $user->username,
 				ProfilePictureType::UPLOAD => $root . "/uploads/profile/" . $userProfileData->serialize() . ".jpg",
 				ProfilePictureType::GRAVATAR => "https://www.gravatar.com/avatar/" . md5($user->email) . "?d=mp&s=200",
-				default => $root . "/res/unknown-person.svg",
+				default => $root . "/res/generic-person.svg",
 			};
 		}
 
-		public static function fromString(string $str): ProfilePictureType|null {
-			if (str_starts_with($str, "upload|")) {
+		public static function fromString(string $str): ProfilePictureType|null
+		{
+			if (str_starts_with($str, "UPLOAD|")) {
 				return ProfilePictureType::UPLOAD;
 			}
 			return match (strtolower($str)) {
-				"empty" => ProfilePictureType::EMPTY,
 				"letter" => ProfilePictureType::LETTER,
 				"upload" => ProfilePictureType::UPLOAD,
 				"gravatar" => ProfilePictureType::GRAVATAR,
-				default => null
+				default => ProfilePictureType::EMPTY,
 			};
 		}
 	}
 
-	interface UserProfileData {
+	interface UserProfileData
+	{
 		public function serialize(): string;
 
 		public static function deserialize(string $str): UserProfileData|null;
 	}
 
-	class UserProfilePictureData implements UserProfileData {
+	class UserProfilePictureData implements UserProfileData
+	{
 		public string $url;
 
-		public function __construct(string $url) {
+		public function __construct(string $url)
+		{
 			$this->url = $url;
 		}
 
-		public function serialize(): string {
-			return "upload|" . $this->url;
+		public function serialize(): string
+		{
+			return $this->url;
 		}
 
-		public static function deserialize(string $str): UserProfileData|null {
-			if (!str_starts_with($str, "upload|")) {
+		public static function deserialize(string $str): UserProfileData|null
+		{
+			if (!str_starts_with($str, "UPLOAD|")) {
 				return null;
 			}
 			return new UserProfilePictureData(substr($str, 7));
 		}
 	}
 
-	class UserProfilePicture {
+	class UserProfilePicture
+	{
 		private User $user;
 		public ProfilePictureType|null $type;
 		public UserProfileData|null $data;
 
-		public function __construct(User $user, string $type) {
+		public function __construct(User $user, string $type)
+		{
 			$this->user = $user;
 			$this->type = ProfilePictureType::fromString($type);
 			$this->data = match ($this->type) {
 				ProfilePictureType::UPLOAD => UserProfilePictureData::deserialize($type),
 				default => null,
 			};
+			if ($this->type == ProfilePictureType::UPLOAD && !isset($this->data)) {
+				$this->type = ProfilePictureType::EMPTY;
+			}
 		}
 
-		public function getUrl(): string {
+		public function getUrl(): string
+		{
 			global $config;
 			return $this->type->getUrl($config->root, $this->user, $this->data);
 		}
@@ -92,7 +104,8 @@
 		public DateTime $updated_at;
 		public UserProfilePicture|null $profile_picture;
 
-		public function save(): bool {
+		public function save(): bool
+		{
 			return updateUser($this);
 		}
 	}
@@ -154,7 +167,7 @@
 
 	function createNewUser($email, $username, $password): User|string
 	{
-		$email = trim($email);
+		$email = strtolower(trim($email));
 		$username = trim($username);
 
 		global $dbconn;

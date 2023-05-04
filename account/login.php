@@ -8,7 +8,8 @@
 		echo "<script>window.location.href = '{$config->root_path}';</script>";
 	}
 
-	if (isset($_POST["email"]) && isset($_POST["password"])) {
+	$triedLoggingIn = isset($_POST["email"]) && isset($_POST["password"]);
+	if ($triedLoggingIn) {
 		$email = $_POST["email"];
 		$password = $_POST["password"];
 
@@ -35,7 +36,7 @@
 			<div></div>
 		</div>
 		<?php
-			if (isset($result) && $result == null) {
+			if ($triedLoggingIn && (!isset($result) || $result == null)) {
 				echo '<p class="login-error">Invalid email or password</p>';
 			}
 		?>

@@ -1,5 +1,6 @@
 <?php
-	function goDie($message = "", $code = 500) {
+	function goDie($message = "", $code = 500)
+	{
 		if ($message == "") {
 			$message = "HTTP $code";
 		}
@@ -27,7 +28,8 @@
 	if (!isset($user)) {
 		goDie("401 Unauthorized", 401);
 	}
-	$file_id = md5($user->id);
+	// add time to fix caching of existing profile pictures
+	$file_id = md5($user->id) . "_" . time();
 
 	$target_dir = "../uploads/profile/";
 	$target_file = $target_dir . $file_id . ".jpg";
@@ -90,9 +92,10 @@
 	imagejpeg($new_image, $image_path);
 
 	if ($user->profile_picture == null) {
-		$user->profile_picture = new UserProfilePicture($user, ProfilePictureType::UPLOAD);
+		$user->profile_picture = new UserProfilePicture($user, ProfilePictureType::UPLOAD->name . "|" . $file_id);
 	} else {
 		$user->profile_picture->type = ProfilePictureType::UPLOAD;
+		$user->profile_picture->data = new UserProfilePictureData($file_id);
 	}
 	updateUser($user);
 
