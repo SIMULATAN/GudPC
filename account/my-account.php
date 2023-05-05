@@ -11,7 +11,6 @@
 		$email = $_POST["email"];
 		$username = $_POST["username"];
 		$password = $_POST["password"];
-		$profile_picture = $_POST["profile_picture"];
 
 		// update existing user
 		if ($user->email != null && $user->email != $email) {
@@ -22,9 +21,6 @@
 		}
 		if ($password != null) {
 			$user->password = password_hash($password, PASSWORD_DEFAULT);
-		}
-		if ($profile_picture != null && $profile_picture != $user->profile_picture) {
-			$user->profile_picture = $profile_picture;
 		}
 
 		updateUser($user);
@@ -133,6 +129,7 @@
         let changeProfilePictureType = function (event) {
             if (event.target.value === "upload") {
                 document.getElementById("profile-picture-upload").click();
+                return;
             }
 
             fetch("../api/change-profile-picture-type.php?type=" + event.target.value, {
@@ -176,16 +173,20 @@
 				<div class="profile-picture-container">
 					<label>Profile Picture</label>
 					<select id="profile-picture-type" onchange="changeProfilePictureType(event)">
-						<option value="gravatar" <?php echo $user->profile_picture?->type == ProfilePictureType::GRAVATAR ? "selected" : "" ?>>
+						<option
+							value="gravatar" <?php echo $user->profile_picture?->type == ProfilePictureType::GRAVATAR ? "selected" : "" ?>>
 							Gravatar
 						</option>
-						<option value="letter" <?php echo $user->profile_picture?->type == ProfilePictureType::LETTER ? "selected" : "" ?>>
+						<option
+							value="letter" <?php echo $user->profile_picture?->type == ProfilePictureType::LETTER ? "selected" : "" ?>>
 							Letter
 						</option>
-						<option value="upload" <?php echo $user->profile_picture?->type == ProfilePictureType::UPLOAD ? "selected" : "" ?>>
+						<option
+							value="upload" <?php echo $user->profile_picture?->type == ProfilePictureType::UPLOAD ? "selected" : "" ?>>
 							Upload
 						</option>
-						<option value="empty" <?php echo $user->profile_picture?->type == ProfilePictureType::EMPTY ? "selected" : "" ?>>
+						<option
+							value="empty" <?php echo $user->profile_picture?->type == ProfilePictureType::EMPTY ? "selected" : "" ?>>
 							Empty
 						</option>
 					</select>
@@ -206,6 +207,7 @@
 
 	<script>
         document.getElementById("profile-picture-display").style.filter = document.getElementById("profile-picture-type").value === "empty" ? "invert(1)" : "none";
+
 	</script>
 
 <?php

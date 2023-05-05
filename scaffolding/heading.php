@@ -26,15 +26,16 @@
 		<a href="/GudPC" class="name headline">GudPC</a>
 		<div class="navbar_links">
 			<div class="cart_button navbar_button" onclick="window.location.href='<?php echo $config->root_path?>cart.php'">
-				<img src="<?php echo $config->root_path?>res/cart.svg">
+				<img alt="cart" src="<?php echo $config->root_path?>res/cart.svg">
 			</div>
 			<div class="lang_button navbar_button" onclick="window.location.href='<?php echo $config->root_path?>lang.php'">
-				<img src="<?php echo $config->root_path?>res/globe.svg">
+				<img alt="change locale" src="<?php echo $config->root_path?>res/globe.svg">
 			</div>
 			<div class="account_link" onclick="toggleDropdown()">
 				<div id="dropdown">
-					<img class="account_button navbar_button profile-picture"
-						src="<?php echo $user ? $user->profile_picture?->getUrl() : '/GudPC/res/unknown-person.svg' ?>"
+					<img alt="your profile picture"
+						class="account_button navbar_button profile-picture"
+						src="<?php echo ($user ? $user->profile_picture?->getUrl() : '/GudPC/res/unknown-person.svg') ?>"
 						style="width: 3em; height: 3em; border-radius: 69%">
 					<div class="dropdown_content">
 						<?php

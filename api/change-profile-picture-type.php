@@ -37,6 +37,7 @@
 	}
 
 	$user->profile_picture->type = $type;
+	$user->profile_picture->data = $type == ProfilePictureType::UPLOAD ? $_FILES["profile_picture"]["tmp_name"] : null;
 	$user->save();
 
 	echo $user->profile_picture->getUrl();
