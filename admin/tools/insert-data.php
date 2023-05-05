@@ -24,6 +24,7 @@
 	}
 
 	$gpus = readCsvFileIntoObjects("gpus");
+	$length = sizeof($gpus);
 	$gpus_inserted = [];
 
 	$insert_count = 0;
@@ -63,34 +64,36 @@
 			$gpus_inserted[] = $gpu["model"];
 		}
 	}
-	logStr("Inserted $insert_count GPU records.");
+	logStr("Inserted $insert_count / $length GPU records.");
 
 	$cpus = readCsvFileIntoObjects("cpus");
-	foreach ($cpus as $cpu) {
-		if (empty($cpu["Processor_Number"])
-			|| empty($cpu["Recommended_Customer_Price"])
-			|| $cpu["Recommended_Customer_Price"] == "N/A"
-			|| empty($cpu["nb_of_Cores"]) || empty($cpu["nb_of_Threads"])
-			|| empty($cpu["Processor_Base_Frequency"])
+	$length = sizeof($cpus);
+	$insert_count = 0;
+	foreach ($cpus as $ram) {
+		if (empty($ram["Processor_Number"])
+			|| empty($ram["Recommended_Customer_Price"])
+			|| $ram["Recommended_Customer_Price"] == "N/A"
+			|| empty($ram["nb_of_Cores"]) || empty($ram["nb_of_Threads"])
+			|| empty($ram["Processor_Base_Frequency"])
 		) {
 			continue;
 		}
 
 		// parse something like "$1,289.99"
-		$price = floatval(str_replace("$", "", str_replace(",", "", $cpu["Recommended_Customer_Price"])));
-		$cores = intval($cpu["nb_of_Cores"]);
-		$threads = intval($cpu["nb_of_Threads"]);
-		if (str_contains($cpu["Processor_Base_Frequency"], "GHz"))
-			$clock_speed = floatval(str_replace("GHz", "", $cpu["Processor_Base_Frequency"]));
+		$price = floatval(str_replace("$", "", str_replace(",", "", $ram["Recommended_Customer_Price"])));
+		$cores = intval($ram["nb_of_Cores"]);
+		$threads = intval($ram["nb_of_Threads"]);
+		if (str_contains($ram["Processor_Base_Frequency"], "GHz"))
+			$clock_speed = floatval(str_replace("GHz", "", $ram["Processor_Base_Frequency"]));
 		else
-			$clock_speed = floatval(str_replace("MHz", "", $cpu["Processor_Base_Frequency"])) / 1000;
+			$clock_speed = floatval(str_replace("MHz", "", $ram["Processor_Base_Frequency"])) / 1000;
 
 		$clock_speed = round($clock_speed, 1);
 		if ($clock_speed == 0)
 			continue;
 
 		$result = pg_insert($dbconn, "cpu", array(
-			"name" => $cpu["Processor_Number"],
+			"name" => $ram["Processor_Number"],
 			"price" => $price,
 			"cores" => $cores,
 			"threads" => $threads,
@@ -99,9 +102,11 @@
 		if ($result)
 			$insert_count++;
 	}
-	logStr("Inserted $insert_count CPU records.");
+	logStr("Inserted $insert_count / $length CPU records.");
 
 	$storage = readCsvFileIntoObjects("storage");
+	$length = sizeof($storage);
+	$insert_count = 0;
 
 	logStr("Deduping storage...");
 	$storage = array_reduce($storage, function ($result, $item) {
@@ -119,7 +124,8 @@
 			$result[] = $item;
 		return $result;
 	}, []);
-	logStr("Done deduping storage, moving on to inserting.");
+	$length = sizeof($storage);
+	logStr("Done deduping storage (length: $length), moving on to inserting.");
 
 	foreach ($storage as $storage_device) {
 		if (empty($storage_device["driveName"])
@@ -128,6 +134,7 @@
 			|| empty($storage_device["type"])
 			|| empty($storage_device["diskCapacity"])
 		) {
+			logStr("Skipping storage device: " . json_encode($storage_device));
 			continue;
 		}
 
@@ -146,9 +153,10 @@
 		if ($result)
 			$insert_count++;
 	}
-	logStr("Inserted $insert_count storage records.");
+	logStr("Inserted $insert_count / $length storage records.");
 
 	$motherboards = readCsvFileIntoObjects("motherboards");
+	$length = sizeof($motherboards);
 	$motherboards_inserted = [];
 
 	$insert_count = 0;
@@ -182,5 +190,41 @@
 			$motherboards_inserted[] = $motherboard["PRODUCT_NAME"];
 		}
 	}
-	logStr("Inserted $insert_count motherboard records.");
+	logStr("Inserted $insert_count / $length motherboard records.");
+
+	$rams = readCsvFileIntoObjects("ram");
+	$length = sizeof($rams);
+	$insert_count = 0;
+	foreach ($rams as $ram) {
+		if (empty($ram["name"])
+			|| empty($ram["type"])
+			|| empty($ram["frequency"]) || empty($ram["capacity"])
+			|| empty($ram["rgb"])
+			|| empty($ram["price"])
+		) {
+			continue;
+		}
+
+		$price = floatval($ram["price"]);
+		$frequency = intval($ram["frequency"]);
+		if (str_contains($ram["capacity"], "GB"))
+			$capacity = floatval(str_replace("GB", "", $ram["capacity"]));
+		else {
+			logStr("Unknown RAM capacity: " . $ram["capacity"]);
+			continue;
+		}
+		$rgb = boolval($ram["rgb"]);
+
+		$result = pg_insert($dbconn, "ram", array(
+			"name" => $ram["name"],
+			"type" => $ram["type"],
+			"price" => $price,
+			"frequency" => $frequency,
+			"capacity" => $capacity,
+			"rgb" => $rgb
+		));
+		if ($result)
+			$insert_count++;
+	}
+	logStr("Inserted $insert_count / $length RAM records.");
 ?>

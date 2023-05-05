@@ -24,35 +24,45 @@
 		id SERIAL PRIMARY KEY,
 		name VARCHAR(255) NOT NULL UNIQUE,
 		type storage_type NOT NULL,
-		price NUMERIC(12,2) NOT NULL CHECK (price > 0),
-		capacity NUMERIC(10) NOT NULL CHECK (capacity > 0)
+		price INT NOT NULL CHECK (price > 0),
+		capacity INT NOT NULL CHECK (capacity > 0)
 	);");
 
 	pg_exec($dbconn, "CREATE TABLE IF NOT EXISTS cpu (
 		id SERIAL PRIMARY KEY,
 		name VARCHAR(255) NOT NULL UNIQUE,
-		price NUMERIC(12,2) NOT NULL CHECK (price > 0),
-		cores NUMERIC(4) NOT NULL CHECK (cores > 0),
-		threads NUMERIC(4) NOT NULL CHECK (threads > 0),
-		frequency NUMERIC(6,2) NOT NULL CHECK (frequency > 0)
+		price INT NOT NULL CHECK (price > 0),
+		cores INT NOT NULL CHECK (cores > 0),
+		threads INT NOT NULL CHECK (threads > 0),
+		frequency INT NOT NULL CHECK (frequency > 0)
 	);");
 
 	pg_exec($dbconn, "CREATE TABLE IF NOT EXISTS gpu (
 		id SERIAL PRIMARY KEY,
 		name VARCHAR(255) NOT NULL UNIQUE,
 		chipset VARCHAR(255),
-		price NUMERIC(12,2) NOT NULL CHECK (price > 0),
-		memory NUMERIC(10) NOT NULL CHECK (memory > 0),
-		frequency NUMERIC(6,2) NOT NULL CHECK (frequency > 0)
+		price INT NOT NULL CHECK (price > 0),
+		memory INT NOT NULL CHECK (memory > 0),
+		frequency INT NOT NULL CHECK (frequency > 0)
 	);");
 
 	pg_exec($dbconn, "CREATE TABLE IF NOT EXISTS motherboard (
 		id SERIAL PRIMARY KEY,
 		name VARCHAR(255) NOT NULL UNIQUE,
-		price NUMERIC(12,2) NOT NULL CHECK (price > 0),
-		memory_slots NUMERIC(4) NOT NULL CHECK (memory_slots > 0),
-		memory_max NUMERIC(10) NOT NULL CHECK (memory_max > 0)
+		price INT NOT NULL CHECK (price > 0),
+		memory_slots INT NOT NULL CHECK (memory_slots > 0),
+		memory_max INT NOT NULL CHECK (memory_max > 0)
 	)");
+
+	pg_exec($dbconn, "CREATE TABLE IF NOT EXISTS ram (
+		id SERIAL PRIMARY KEY,
+		name VARCHAR(255) NOT NULL UNIQUE,
+		type VARCHAR(255) NOT NULL,
+		frequency INT NOT NULL CHECK (frequency > 0),
+		capacity INT NOT NULL CHECK (capacity > 0),
+		rgb BOOLEAN NOT NULL,
+		price INT NOT NULL CHECK (price > 0)
+	);");
 
 	echo "Database initialized.\n";
 ?>
