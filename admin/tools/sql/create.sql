@@ -60,9 +60,3 @@ CREATE TABLE ram
     rgb       BOOLEAN      NOT NULL,
     price     INT          NOT NULL CHECK (price > 0)
 );
-
-CREATE TABLE migrations
-(
-    version INTEGER PRIMARY KEY,
-    date   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
