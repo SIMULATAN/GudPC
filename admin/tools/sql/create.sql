@@ -60,3 +60,30 @@ CREATE TABLE ram
     rgb       BOOLEAN      NOT NULL,
     price     INT          NOT NULL CHECK (price > 0)
 );
+
+CREATE TABLE permission
+(
+    name VARCHAR(255) PRIMARY KEY NOT NULL
+);
+
+CREATE TABLE user_permission
+(
+    user_id    INT          NOT NULL REFERENCES users (id),
+    permission VARCHAR(255) NOT NULL REFERENCES permission (name),
+    PRIMARY KEY (user_id, permission)
+);
+
+INSERT INTO permission (name)
+VALUES ('product_manager');
+
+CREATE TABLE product
+(
+    id             SERIAL PRIMARY KEY,
+    name           VARCHAR(100)   NOT NULL,
+    price          DECIMAL(10, 2) NOT NULL,
+    cpu_id         INTEGER        NOT NULL REFERENCES cpu (id),
+    gpu_id         INTEGER        REFERENCES gpu (id),
+    ram_id         INTEGER        NOT NULL REFERENCES ram (id),
+    storage_id     INTEGER        NOT NULL REFERENCES storage (id),
+    motherboard_id INTEGER        NOT NULL REFERENCES motherboard (id)
+);

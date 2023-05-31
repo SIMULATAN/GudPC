@@ -78,7 +78,7 @@ a {
     margin-bottom: 5%;
 }
 
-.panel_inner {
+.panel_inner, .panel_wrapper_inner {
     color: var(--theme-font-color);
     background-color: var(--theme-container-background);
     border-radius: var(--theme-container-border-radius);

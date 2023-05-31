@@ -18,7 +18,8 @@
 			$row = array_map('trim', $row);
 			try {
 				$result[] = array_combine($header, $row);
-			} catch (Error $ignored) {}
+			} catch (Error $ignored) {
+			}
 		}
 		return $result;
 	}
@@ -227,4 +228,50 @@
 			$insert_count++;
 	}
 	logStr("Inserted $insert_count / $length RAM records.");
-?>
+
+	$products = readCsvFileIntoObjects("products");
+	$length = sizeof($products);
+	$insert_count = 0;
+	foreach ($products as $product) {
+		// fuck validation I made this shit myself this better be valid
+		$name = $product["name"];
+		$price = floatval($product["price"]);
+
+		$cpuName = $product["cpu"];
+		$result = pg_query_params($dbconn, "SELECT id FROM cpu WHERE name = $1", array($cpuName));
+		if ($result && pg_num_rows($result) > 0)
+			$cpu = pg_fetch_array($result)[0];
+
+		$gpuName = $product["gpu"];
+		$result = pg_query_params($dbconn, "SELECT id FROM gpu WHERE name = $1", array($gpuName));
+		if ($result && pg_num_rows($result) > 0)
+			$gpu = pg_fetch_array($result)[0];
+
+		$motherboardName = $product["motherboard"];
+		$result = pg_query_params($dbconn, "SELECT id FROM motherboard WHERE name = $1", array($motherboardName));
+		if ($result && pg_num_rows($result) > 0)
+			$motherboard = pg_fetch_array($result)[0];
+
+		$ramName = $product["ram"];
+		$result = pg_query_params($dbconn, "SELECT id FROM ram WHERE name = $1", array($ramName));
+		if ($result && pg_num_rows($result) > 0)
+			$ram = pg_fetch_array($result)[0];
+
+		$storageName = $product["storage"];
+		$result = pg_query_params($dbconn, "SELECT id FROM storage WHERE name = $1", array($storageName));
+		if ($result && pg_num_rows($result) > 0)
+			$storage = pg_fetch_array($result)[0];
+
+		$result = pg_insert($dbconn, "product", array(
+			"name" => $name,
+			"price" => $price,
+			"cpu_id" => $cpu,
+			"gpu_id" => $gpu,
+			"ram_id" => $ram,
+			"storage_id" => $storage,
+			"motherboard_id" => $motherboard
+		));
+		if ($result)
+			$insert_count++;
+	}
+	logStr("Inserted $insert_count / $length product records.");
