@@ -2,7 +2,7 @@
 	class Migrator
 	{
 		# const in a class because shitty ass php doesn't allow final variables outside of classes lmao
-		const CURRENT_VERSION = 1;
+		const CURRENT_VERSION = 2;
 
 		public static function init($dbconn) {
 			pg_exec($dbconn, "
