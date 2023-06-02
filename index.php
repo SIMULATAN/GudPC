@@ -42,6 +42,25 @@
 			?>
 		</div>
 	</div>
+    <a class="button" href="shop.php">Shop</a>
+</div>
+
+<div class="full_height">
+    <div style="width: 100%; display: flex; justify-content: center;">
+        <div class="panel_wrapper">
+            <div class="panel_wrapper_inner" id="about_us_panel" style="min-width: 60vw; max-width: 90vw; margin: 2% 0;">
+                <h1>About us</h1>
+                <p>We are GudPC and we have 0 years of Experience in the PC selling area.
+                <p>Here at GudPC, we try to sell you the worst of Computers to</p>
+                <p>maximize our Profit whilst keeping the cost for us low.</p>
+                <p></p>
+                <p>Please buy our stuff, my cat needs Food and I cba to do a proper Job.</p>
+                <p>Because of the fact that we will scam you, our Computers are Always in stock!</p>
+                <p>How cool is that! Now click the button below and buy pls</p>
+            </div>
+        </div>
+    </div>
+    <a class="button" style="margin-top: 1%" href="shop.php">Shop</a>
 </div>
 
 <?php
