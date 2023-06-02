@@ -34,35 +34,61 @@
 	$products = Product::fetchProducts($dbconn);
 
 	pg_close($dbconn);
+
+	$filters = array();
+
+    // save products array into JavaScript
+    echo "<script>";
+    echo "const products = " . json_encode($products) . ";";
+    echo "</script>";
 ?>
+
+<script>
+    let filters = {};
+
+    function changeFilter(event, type, value) {
+        if (event.target.checked) {
+            if (filters[type] === undefined) {
+                filters[type] = [];
+            }
+            filters[type].push(value);
+        } else {
+            filters[type].splice(filters[type].indexOf(value), 1);
+            if (filters[type].length === 0) {
+                delete filters[type];
+            }
+        }
+        populateProducts()
+    }
+</script>
 
 <div class="full_height">
     <div class="shoppanel_wrapper">
         <div class="filters_wrapper">
             <div class="filters_filter_wrapper">
 				<?php
-					$filters = array();
+					$available_filters = array();
 					foreach ($products as &$product) {
 						foreach ($product as $key => $value) {
 							if (str_ends_with($key, "_id")) {
 								$key = substr($key, 0, -3);
-								if (!array_key_exists($key, $filters)) {
-									$filters[$key] = array();
+								if (!array_key_exists($key, $available_filters)) {
+									$available_filters[$key] = array();
 								}
 								// reassign with the actual value instead of the id
 								$value = $product[$key];
-								if (!in_array($value, $filters[$key])) {
-									$filters[$key][] = $value;
+								if (!in_array($value, $available_filters[$key])) {
+									$available_filters[$key][] = $value;
 								}
 							}
 						}
 					}
 
-					foreach ($filters as $key => $values) {
+					foreach ($available_filters as $key => $values) {
 						echo "<div class='filters_filter_key'>$key</div>";
 						foreach ($values as $value) {
 							echo "<div class='filters_line_wrapper'>";
-							echo "<input type='checkbox'>";
+							echo "<input type='checkbox' onchange='changeFilter(event, \"$key\", \"$value\")'>";
 							echo "<div>$value</div>";
 							echo "</div>";
 						}
@@ -71,19 +97,37 @@
             </div>
         </div>
         <div class="results_wrapper">
-            <div class="results_products_grid">
-				<?php
-					foreach ($products as &$product) {
-						$title = $product["name"];
-						$cpu = $product["cpu"];
-						$gpu = $product["gpu"];
-						$motherboard = $product["motherboard"];
-						$ram = $product["ram"];
-						$storage = $product["storage"];
-						create_panel($title, $cpu, $gpu, $motherboard, $ram, $storage);
-					}
-				?>
-            </div>
+            <div class="results_products_grid" id="results_products_grid"></div>
+            <script defer>
+                function populateProducts() {
+                    document.getElementById("results_products_grid").innerHTML = "";
+                    for (let i = 0; i < products.length; i++) {
+                        const product = products[i];
+                        if (Object.keys(filters).length > 0) {
+                            for (const productElement of Object.entries(product)) {
+                                const [key, value] = productElement;
+                                if (filters[key] !== undefined && !filters[key].includes(value)) {
+                                    return;
+                                }
+                            }
+                        }
+                        let panel = document.createElement("div");
+                        panel.classList.add("products_panel_product_panel");
+                        panel.classList.add("panel_wrapper_inner");
+                        panel.innerHTML = `
+                            <h1>${product.name}</h1>
+                            <p>CPU: ${product.cpu}</p>
+                            <p>GPU: ${product.gpu}</p>
+                            <p>Motherboard: ${product.motherboard}</p>
+                            <p>RAM: ${product.ram}</p>
+                            <p>Storage: ${product.storage}</p>
+                        `;
+                        document.getElementById("results_products_grid").appendChild(panel);
+                    }
+                }
+
+                document.addEventListener("DOMContentLoaded", populateProducts);
+            </script>
         </div>
     </div>
 </div>
