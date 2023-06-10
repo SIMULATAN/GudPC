@@ -101,13 +101,12 @@
             <script defer>
                 function populateProducts() {
                     document.getElementById("results_products_grid").innerHTML = "";
-                    for (let i = 0; i < products.length; i++) {
-                        const product = products[i];
+                    test: for (let product of products) {
                         if (Object.keys(filters).length > 0) {
                             for (const productElement of Object.entries(product)) {
                                 const [key, value] = productElement;
                                 if (filters[key] !== undefined && !filters[key].includes(value)) {
-                                    return;
+                                    continue test;
                                 }
                             }
                         }
