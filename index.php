@@ -9,7 +9,7 @@
 </div>
 
 <?php
-	function create_panel($title, $description, $img)
+	function createPanel($title, $description, $img)
 	{
 		echo "<div class=\"panel\" data-aos=\"fade-up\">";
 		echo "<div class=\"panel_inner\">";
