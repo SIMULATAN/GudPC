@@ -11,7 +11,7 @@
 </div>
 
 <?php
-	function create_panel($name, $cpu, $gpu, $motherboard, $ram, $storage)
+	function createPanel($name, $cpu, $gpu, $motherboard, $ram, $storage)
 	{
 		echo "<div class='products_panel_product_panel panel_wrapper_inner'>";
 		echo "<h1>$name</h1>";
@@ -59,6 +59,24 @@
             }
         }
         populateProducts()
+    }
+
+    function addToCart(product_id) {
+        fetch("api/cart.php?action=add&product_id=" + product_id)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to add to cart!");
+                }
+                return response.text();
+            })
+            .then(data => {
+                console.log(data);
+                updateCartCount(data);
+            })
+            .catch(error => {
+                console.error(error);
+                alert("Failed to add to cart!");
+            });
     }
 </script>
 
@@ -114,12 +132,15 @@
                         panel.classList.add("products_panel_product_panel");
                         panel.classList.add("panel_wrapper_inner");
                         panel.innerHTML = `
-                            <h1>${product.name}</h1>
-                            <p>CPU: ${product.cpu}</p>
-                            <p>GPU: ${product.gpu}</p>
-                            <p>Motherboard: ${product.motherboard}</p>
-                            <p>RAM: ${product.ram}</p>
-                            <p>Storage: ${product.storage}</p>
+                            <div>
+                                <h1>${product.name}</h1>
+                                <p>CPU: ${product.cpu}</p>
+                                <p>GPU: ${product.gpu}</p>
+                                <p>Motherboard: ${product.motherboard}</p>
+                                <p>RAM: ${product.ram}</p>
+                                <p>Storage: ${product.storage}</p>
+                            </div>
+                            <button class="add-to-cart-button" onclick="addToCart('${product.id}')">Add to cart</button>
                         `;
                         document.getElementById("results_products_grid").appendChild(panel);
                     }

@@ -2,7 +2,7 @@
 	class Migrator
 	{
 		# const in a class because shitty ass php doesn't allow final variables outside of classes lmao
-		const CURRENT_VERSION = 2;
+		const CURRENT_VERSION = 3;
 
 		public static function init($dbconn) {
 			pg_exec($dbconn, "
@@ -51,8 +51,8 @@
 					return true;
 				}
 
-				$fileVersion = $groups[0];
-				if ($dbVersion <= $fileVersion) {
+				$fileVersion = $groups[1];
+				if ($dbVersion < $fileVersion) {
 					echo "Migrating $migrationFile...\n";
 					$result = pg_exec($dbconn, file_get_contents("$migrationFileDirectory/{$migrationFile}"));
 					if (!$result) {

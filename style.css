@@ -1,5 +1,7 @@
 :root {
     --theme-container-background: rgba(52, 52, 52, 0.5);
+    --theme-button-background: rgba(52, 52, 52, 0.5);
+    --theme-button-background-hover: rgba(52, 52, 52, 0.9);
     --theme-container-border-radius: 1em;
     --theme-font-color: white;
 }
@@ -327,4 +329,52 @@ h1, h2, h3, h4, h5, h6, p {
 .button:hover {
     transform: scale(1.05);
     cursor: pointer;
+}
+
+.icon-badge-group .icon-badge-container {
+    display: inline-block;
+    margin-left: 15px;
+}
+
+.icon-badge-group .icon-badge-container:first-child {
+    margin-left:0
+}
+
+.icon-badge-container {
+    margin-top: 15%;
+    position: relative;
+}
+
+.icon-badge-icon {
+    font-size: 30px;
+    position: relative;
+}
+
+.icon-badge {
+    background-color: red;
+    font-size: 12px;
+    color: white;
+    text-align: center;
+    width:20px;
+    height:20px;
+    border-radius: 35%;
+    position: absolute;
+    top: -5px;
+    left: 18px;
+}
+
+.pulse-animation {
+    animation: pulse 500ms;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
 }

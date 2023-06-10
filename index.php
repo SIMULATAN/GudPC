@@ -29,16 +29,16 @@
 	<div id="about_panels">
 		<div class="panel_fw">
 			<?php
-				create_panel("No deliveries", "We never deliver what we promised", "deliveries.svg");
-				create_panel("Highest prices", "You'll get a car cheaper than our PCs", "money.svg");
-				create_panel("Worst service", "We do not care about your issues", "service.svg");
+				createPanel("No deliveries", "We never deliver what we promised", "deliveries.svg");
+				createPanel("Highest prices", "You'll get a car cheaper than our PCs", "money.svg");
+				createPanel("Worst service", "We do not care about your issues", "service.svg");
 			?>
 		</div>
 		<div class="panel_fw">
 			<?php
-				create_panel("0 day Money Back guarantee", "Haha get scammed", "debt.svg");
-				create_panel("Customers hate us!", "They're all angry at us and would like to know our address", "angry.svg");
-				create_panel("No experience at all", "We have zero clue what the hell we're doing", "time.svg");
+				createPanel("0 day Money Back guarantee", "Haha get scammed", "debt.svg");
+				createPanel("Customers hate us!", "They're all angry at us and would like to know our address", "angry.svg");
+				createPanel("No experience at all", "We have zero clue what the hell we're doing", "time.svg");
 			?>
 		</div>
 	</div>
