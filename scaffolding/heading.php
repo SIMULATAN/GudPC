@@ -21,6 +21,22 @@
     <title>GudPC</title>
 </head>
 <body>
+<script defer>
+    function logout() {
+        fetch("api/logout.php")
+            .then(response => {
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    throw new Error(response.statusText);
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                alert("An error occurred while logging out!")
+            });
+    }
+</script>
 <div class="navbar_outer" data-aos="zoom-in-down" data-aos-duration="600">
     <div class="navbar">
         <a href="/GudPC" class="name headline">GudPC</a>
@@ -59,7 +75,7 @@
 						<?php
 							if (isset($_SESSION["user"])) {
 								echo "<a href=\"{$config->root_path}account/my-account.php\">My Account</a>";
-								echo "<a href=\"{$config->root_path}account/logout.php\">Logout</a>";
+								echo "<a onclick='logout()'>Logout</a>";
 							} else {
 								echo "<a href=\"{$config->root_path}account/login.php\">Login</a>";
 							}

@@ -62,6 +62,12 @@
     }
 
     function addToCart(product_id) {
+        <?php
+            if (!isset($_SESSION["user"])) {
+                echo "alert(\"You must be logged in to add to cart!\");";
+                echo "return;";
+            }
+        ?>
         fetch("api/cart.php?action=add&product_id=" + product_id)
             .then(response => {
                 if (!response.ok) {
