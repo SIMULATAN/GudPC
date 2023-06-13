@@ -86,7 +86,13 @@
     }
 </script>
 
-<div class="full_height">
+<a class="scroll_indicator" onclick="document.getElementById('main-content').scrollIntoView({behavior: 'smooth'})">
+    <span></span>
+    <span></span>
+    <span></span>
+</a>
+
+<div class="full_height" id="main-content">
     <div class="shoppanel_wrapper">
         <div class="filters_wrapper">
             <div class="filters_filter_wrapper">
