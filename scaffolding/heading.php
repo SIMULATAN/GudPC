@@ -41,35 +41,37 @@
     <div class="navbar">
         <a href="/GudPC" class="name headline">GudPC</a>
         <div class="navbar_links">
-            <div class="cart_button navbar_button icon-badge-group"
-                 onclick="window.location.href='<?php echo $config->root_path ?>cart.php'">
-                <div class="icon-badge-container">
-                    <img alt="cart" src="<?php echo $config->root_path ?>res/cart.svg">
-					<?php
-						function fillCartBadge($user, $config)
-						{
-							if ($user == null) return;
-							echo '<div class="icon-badge" id="cart_count">';
-							require_once $_SERVER["DOCUMENT_ROOT"] . "/GudPC/scaffolding/db/cart.php";
-							$dbconn = pg_connect($config->db_connection_string);
-							echo getCartCount($dbconn, $user->id);
-							pg_close($dbconn);
-							echo '</div>';
-						}
+            <a class="shop_button navbar_button"
+               href="<?php echo $config->root_path ?>shop.php">
+                <img alt="change locale" src="<?php echo $config->root_path ?>res/computer-monitor.svg">
+            </a>
+			<?php
+				function fillCartBadge($user, $config)
+				{
+					if ($user == null) return;
+					echo '
+                    <a class="cart_button navbar_button icon-badge-group"
+                         href="'.$config->root_path.'cart.php">
+                        <div class="icon-badge-container">
+                            <img alt="cart" src="'.$config->root_path.'res/cart.svg">';
+					echo '<div class="icon-badge" id="cart_count">';
+					require_once $_SERVER["DOCUMENT_ROOT"].$config->root_path."scaffolding/db/cart.php";
+					$dbconn = pg_connect($config->db_connection_string);
+					echo getCartCount($dbconn, $user->id);
+					pg_close($dbconn);
+					echo '</div>';
+                    echo '
+                        </div>
+                    </a>';
+				}
 
-						fillCartBadge($user, $config);
-					?>
-                </div>
-            </div>
-            <div class="lang_button navbar_button"
-                 onclick="window.location.href='<?php echo $config->root_path ?>lang.php'">
-                <img alt="change locale" src="<?php echo $config->root_path ?>res/globe.svg">
-            </div>
+				fillCartBadge($user, $config);
+			?>
             <div class="account_link" onclick="toggleDropdown()">
                 <div id="dropdown">
                     <img alt="your profile picture"
                          class="account_button navbar_button profile-picture"
-                         src="<?php echo($user ? $user->profile_picture?->getUrl() : '/GudPC/res/unknown-person.svg') ?>"
+                         src="<?php echo $user ? $user->profile_picture?->getUrl() : $config->root_path.'res/unknown-person.svg' ?>"
                          style="width: 3em; height: 3em; border-radius: 69%">
                     <div class="dropdown_content">
 						<?php
