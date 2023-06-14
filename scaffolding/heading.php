@@ -23,7 +23,7 @@
 <body>
 <script defer>
     function logout() {
-        fetch("api/logout.php")
+        fetch("<?php echo $config->root_path; ?>api/logout.php")
             .then(response => {
                 if (response.ok) {
                     window.location.reload();
