@@ -35,8 +35,8 @@ Don't forget to adjust the values according to your setup.
 
 === 3. Install the dependencies
 
-This project requires you to install the `pgsql` extension for PHP.<br>
-To find out how to install it, please refer to the documentation of your webserver.<br>
+This project requires you to install the `pgsql` extension for PHP.
+To find out how to install it, please refer to the documentation of your webserver.
 
 Notable changes / dependencies can be found in https://github.com/SIMULATAN/LAMP/commit/d3671c1c3e6590ff2993f66b8461f5a21e9b20bb[this commit].
 
