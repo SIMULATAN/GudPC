@@ -43,7 +43,7 @@
         <div class="navbar_links">
             <a class="shop_button navbar_button"
                href="<?php echo $config->root_path ?>shop.php">
-                <img alt="change locale" src="<?php echo $config->root_path ?>res/computer-monitor.svg">
+                <img alt="change locale" src="<?php echo $config->root_path ?>res/shop.svg">
             </a>
 			<?php
 				function fillCartBadge($user, $config)
