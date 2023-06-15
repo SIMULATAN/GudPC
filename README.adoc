@@ -1,0 +1,69 @@
+:icons: font
+
+= GudPC
+
+This is the official repository of my MEDT Project, GudPC. +
+GudPC is the worst possible site to buy a PC from.
+
+== Setup
+
+This project is built with PHP, therefore, you need a webserver with PHP installed.
+
+=== 1. Host the Database
+
+Since MySQL sucks, this project uses PostgreSQL. +
+A docker-compose file is provided in the `docker/postgres` directory. +
+To start the database, run `docker-compose up -d` in the `docker/postgres` directory. +
+To stop the database, run `docker-compose down` in the `docker/postgres` directory. +
+
+=== 2. Configure the application
+
+Create a `config.ini` file in `$DOCUMENT_ROOT/GudPC/` with the following content:
+
+[source,ini]
+----
+# the path of the webserver containing the index.php file
+# NOTE: this refers to the path of the webserver, not the path of the project on the host
+root_path = "/GudPC/"
+
+[database]
+# this default value is for the docker-compose file provided in this repository
+db_connection_string = "host=postgres port=5432 dbname=db user=app password=app"
+----
+
+Don't forget to adjust the values according to your setup.
+
+=== 3. Install the dependencies
+
+This project requires you to install the `pgsql` extension for PHP.<br>
+To find out how to install it, please refer to the documentation of your webserver.<br>
+
+Notable changes / dependencies can be found in https://github.com/SIMULATAN/LAMP/commit/d3671c1c3e6590ff2993f66b8461f5a21e9b20bb[this commit].
+
+If you want a full working LAMP stack for use with this project, you can use https://github.com/SIMULATAN/LAMP[this repository].
+
+=== 4. Copy the website to the webserver
+
+Copy the contents of this repository to the webserver.
+Make sure that the `root_path` in the `config.ini` file is correct.
+
+=== 5. Init the database
+
+Admin tools are provided in `admin/tools`.
+To init the database, run `php init-db.php` in the `admin/tools` directory.
+
+WARNING: this only creates the tables, it does not insert any data.
+
+=== 6. Insert data into the database
+Due to tight time constraints, I was not able to implement a proper admin interface.
+Therefore, you have to insert the data manually into the database.
+
+Some example data is provided in the `admin/tools/data` directory. +
+To insert it, run `php insert-data.php` in the `admin/tools` directory.
+
+=== 7. Done
+nice you got the worst possible webshop set up now, go use it i guess
+
+== License
+Please don't use this, it's PHP, that alone should be enough of a reason to refrain from going anywhere near it. +
+If you want to anyway, you can use it under the terms of the link:LICENSE[MIT license].
