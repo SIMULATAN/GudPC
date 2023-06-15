@@ -89,7 +89,7 @@
 		public function getUrl(): string
 		{
 			global $config;
-			return $this->type->getUrl($config->root, $this->user, $this->data);
+			return $this->type->getUrl($config->root_path, $this->user, $this->data);
 		}
 	}
 

@@ -58,7 +58,6 @@
 					require_once $_SERVER["DOCUMENT_ROOT"].$config->root_path."scaffolding/db/cart.php";
 					$dbconn = pg_connect($config->db_connection_string);
 					echo getCartCount($dbconn, $user->id);
-					pg_close($dbconn);
 					echo '</div>';
                     echo '
                         </div>

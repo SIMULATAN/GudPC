@@ -89,7 +89,9 @@
 	$image_name = $target_file; // This generates a unique filename based on the current time
 	$image_path = $image_name; // This is the path where the image will be saved
 	// Save the resized and cropped image as a JPEG to the specified directory
-	imagejpeg($new_image, $image_path);
+	if (!@imagejpeg($new_image, $image_path)) {
+		goDie("Failed to save image.", 500);
+	}
 
 	if ($user->profile_picture == null) {
 		$user->profile_picture = new UserProfilePicture($user, ProfilePictureType::UPLOAD->name . "|" . $file_id);
