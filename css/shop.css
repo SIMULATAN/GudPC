@@ -82,3 +82,19 @@
 .add-to-cart-button:hover {
     background-color: var(--theme-button-background-hover);
 }
+
+.button-clicked {
+    animation: green-pulse 1s;
+}
+
+@keyframes green-pulse {
+    0% {
+        background-color: var(--theme-button-background);
+    }
+    50% {
+        background-color: color-mix(in srgb, var(--theme-button-background), limegreen);
+    }
+    100% {
+        background-color: var(--theme-button-background);
+    }
+}

@@ -61,7 +61,7 @@
         populateProducts()
     }
 
-    function addToCart(product_id) {
+    function addToCart(event, product_id) {
         <?php
             if (!isset($_SESSION["user"])) {
                 echo "alert(\"You must be logged in to add to cart!\");";
@@ -78,6 +78,11 @@
             .then(data => {
                 console.log(data);
                 updateCartCount(data);
+                let element = event.target;
+                // force redraw
+                element.classList.remove("button-clicked")
+                element.offsetWidth
+                element.classList.add("button-clicked")
             })
             .catch(error => {
                 console.error(error);
@@ -152,7 +157,7 @@
                                 <p>RAM: ${product.ram}</p>
                                 <p>Storage: ${product.storage}</p>
                             </div>
-                            <button class="add-to-cart-button" onclick="addToCart('${product.id}')">Add to cart</button>
+                            <button class="add-to-cart-button" onclick="addToCart(event, '${product.id}')">Add to cart</button>
                         `;
                         document.getElementById("results_products_grid").appendChild(panel);
                     }
