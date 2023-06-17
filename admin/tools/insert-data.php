@@ -1,5 +1,9 @@
-<?php global $dbconn;
-	$dbconn = pg_connect("host=postgres port=5432 dbname=db user=app password=app");
+<?php
+	require_once $_SERVER["DOCUMENT_ROOT"] . "/GudPC/config/config.php";
+	global $config;
+
+	global $dbconn;
+	$dbconn = pg_connect($config->db_connection_string);
 
 	function logStr($str): void
 	{

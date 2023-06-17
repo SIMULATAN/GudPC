@@ -23,20 +23,11 @@
     height: fit-content;
 }
 
-.cart_entry > div {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
-
-.cart_entry > div:first-child {
-    flex-grow: 1;
-}
-
 .cart_entry > div:last-child {
     display: inline-flex;
     justify-content: right;
-    gap: 10%;
+    gap: 0.5em;
+    align-items: center;
 }
 
 .change_quantity_buttons {
@@ -44,7 +35,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    gap: 5%;
+    gap: 0.5em;
 }
 
 .quantity {

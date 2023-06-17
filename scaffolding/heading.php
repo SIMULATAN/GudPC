@@ -76,6 +76,7 @@
 						<?php
 							if (isset($_SESSION["user"])) {
 								echo "<a href=\"{$config->root_path}account/my-account.php\">My Account</a>";
+                                echo "<a href=\"{$config->root_path}payment-history.php\">Payment history</a>";
 								echo "<a onclick='logout()'>Logout</a>";
 							} else {
 								echo "<a href=\"{$config->root_path}account/login.php\">Login</a>";

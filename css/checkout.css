@@ -1,0 +1,24 @@
+#checkout {
+    background-color: var(--theme-container-background);
+    border-radius: var(--theme-container-border-radius);
+    display: flex;
+    flex-direction: column;
+    padding: 2%;
+    width: 80%;
+    height: 75%;
+}
+
+.checkout_entry {
+    background-color: var(--theme-container-background);
+    border-radius: calc(var(--theme-container-border-radius) / 2);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5% 1%;
+    margin-bottom: 1%;
+}
+
+.cart_shop_button {
+    width: fit-content;
+}

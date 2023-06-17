@@ -21,6 +21,11 @@
             <a class="button cart_shop_button" style="margin-top: 1%" href="shop.php">Shop</a>
         </div>
     ';
+	$checkout_text = '
+        <div style="display: flex; justify-content: center; width: 100%">
+            <a class="button cart_shop_button" style="margin-top: 0.5%" href="confirm-checkout.php">Checkout</a>
+        </div>
+    ';
 ?>
 <link rel="stylesheet" href="css/cart.css">
 
@@ -28,6 +33,10 @@
     function showEmptyCartText() {
         // shitty ass JS can't handle newlines so we have to replace them (epic fail)
         document.getElementById("cart").innerHTML = '<?php echo str_replace("\n", "", $cart_empty_text); ?>';
+    }
+
+    function showCheckoutText() {
+        document.getElementById("button-area").innerHTML = '<?php echo str_replace("\n", "", $checkout_text); ?>';
     }
 
     function removeProduct(productId) {
@@ -43,12 +52,14 @@
                     updateCartCount(data);
                     document.getElementById("product-" + productId).remove();
                     if (data == 0) showEmptyCartText();
+                    else showCheckoutText()
                 }
             );
     }
 
     function updateQuantity(operation, productId) {
-        let quantity = document.getElementById("product-" + productId).getElementsByClassName("quantity-num")[0];
+        let productElement = document.getElementById("product-" + productId);
+        let quantity = productElement.getElementsByClassName("quantity-num")[0];
         let quantityNum = parseInt(quantity.innerText);
         if (operation === "+") {
             quantityNum++;
@@ -66,12 +77,18 @@
             .then(data => {
                 updateCartCount(data);
                 if (quantityNum === 0) {
-                    document.getElementById("product-" + productId).remove();
+                    productElement.remove();
                 } else {
                     quantity.innerText = quantityNum;
+                    let price = productElement.getElementsByClassName("price")[0];
+                    let priceNum = parseFloat(price.getAttribute("data-piece-price"));
+                    let priceRoundedBecauseJSFloatingPointMathSucks = Math.round(priceNum * quantityNum * 100) / 100;
+                    let pricePaddedToTwoDecimals = priceRoundedBecauseJSFloatingPointMathSucks.toFixed(2);
+                    price.innerText = quantityNum + " x " + priceNum + "€ = " + pricePaddedToTwoDecimals + "€";
                 }
 
                 if (data == 0) showEmptyCartText();
+                else showCheckoutText();
             });
     }
 </script>
@@ -93,6 +110,8 @@
 				echo "</div>";
 				echo "<div>";
 				echo "<div class='change_quantity_buttons'>";
+                $totalPrice = $item['quantity'] * $item['price'];
+                echo "<p class='price' data-piece-price='${item['price']}'>${item['quantity']} x ${item['price']}€ = ${totalPrice}€</p>";
 				echo "<p class='quantity' onclick='updateQuantity(\"-\", ${item['id']})'>-</p>";
 				echo "<p class='quantity-num'>${item['quantity']}</p>";
 				echo "<p class='quantity' onclick='updateQuantity(\"+\", ${item['id']})'>+</p>";
@@ -102,6 +121,12 @@
 				echo "</div>";
 			}
 		?>
+        <div id="button-area"></div>
+        <?php
+            if (count($cart_items) > 0) {
+                echo '<script>showCheckoutText();</script>';
+            }
+        ?>
     </div>
 </div>
 

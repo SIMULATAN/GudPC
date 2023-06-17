@@ -1,0 +1,29 @@
+#history {
+    background-color: var(--theme-container-background);
+    border-radius: var(--theme-container-border-radius);
+    display: flex;
+    flex-direction: column;
+    padding: 2%;
+    width: 80%;
+    height: 75%;
+}
+
+#history-entries {
+    max-height: 50vh;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.cart_shop_button {
+    width: fit-content;
+}
+
+#history-table tbody th {
+    font-weight: normal;
+}
+
+#history-table th {
+    width: 33.3%;
+}

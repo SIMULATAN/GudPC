@@ -2,7 +2,7 @@
 	class Migrator
 	{
 		# const in a class because shitty ass php doesn't allow final variables outside of classes lmao
-		const CURRENT_VERSION = 3;
+		const CURRENT_VERSION = 5;
 
 		public static function init($dbconn) {
 			pg_exec($dbconn, "
@@ -74,7 +74,6 @@
 
 	# I despise PHP for this like what the fuck
 	require_once "../../config/config.php";
-
 	global $config;
 
 	global $dbconn;

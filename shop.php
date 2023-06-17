@@ -157,7 +157,7 @@
                                 <p>RAM: ${product.ram}</p>
                                 <p>Storage: ${product.storage}</p>
                             </div>
-                            <button class="add-to-cart-button" onclick="addToCart(event, '${product.id}')">Add to cart</button>
+                            <button class="add-to-cart-button" onclick="addToCart(event, '${product.id}')">Add to cart (${product.price}€)</button>
                         `;
                         document.getElementById("results_products_grid").appendChild(panel);
                     }

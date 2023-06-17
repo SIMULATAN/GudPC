@@ -86,6 +86,10 @@
 			padding: .2em;
 			height: 2em;
 		}
+
+        .login-form {
+            flex-grow: 1;
+        }
 	</style>
 
 	<script>
@@ -157,7 +161,7 @@
 	</script>
 
 	<div class="panel header">
-		<div class="panel_inner no-hover box-padding">
+		<div class="panel_inner no-hover box-padding" style="min-width: 50%;">
 			<h1 class="headline">Account</h1>
 			<div class="my-account-panel">
 				<form action="?action=account" method="post" class="login-form">
